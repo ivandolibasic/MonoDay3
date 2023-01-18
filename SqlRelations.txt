@@ -1,0 +1,97 @@
+/*A review belongs to only one book. A book has many reviews. (1:n)*/
+
+CREATE TABLE Book (
+  Id INT PRIMARY KEY,
+  Title VARCHAR(255),
+  Author VARCHAR(255),
+);
+
+CREATE TABLE Review (
+  Id INT PRIMARY KEY,
+  ReviewerName VARCHAR(255),
+  Content VARCHAR(255),
+  Rating INT,
+  BookId INT,
+  FOREIGN KEY (BookId) REFERENCES Book(Id)
+);
+
+INSERT INTO Book (Id, Title, Author) VALUES (1, 'The Great Gatsby', 'F. Scott Fitzgerald');
+INSERT INTO Review (Id, ReviewerName, Content, Rating, BookId) VALUES (1, 'John Smith', 'I loved this book!', 5, 1);
+INSERT INTO Review (Id, ReviewerName, Content, Rating, BookId) VALUES (2, 'Jane Doe', 'It was just okay.', 3, 1);
+
+--SELECT * FROM Book;
+--SELECT * FROM Review ORDER BY Rating DESC;
+
+/*Inner join:*/
+SELECT * FROM Book
+	JOIN Review ON Book.Id = Review.BookId
+		ORDER BY Review.Rating DESC;
+
+DELETE FROM Review WHERE Id = 2;
+SELECT * FROM Review;
+
+UPDATE Review
+SET Rating = 4
+WHERE Id = 2;
+SELECT * FROM Review;
+
+____________________________________________________________________________________________________________________
+
+
+/*One employee can have only one salary. (1:1)*/
+
+CREATE TABLE Salary (
+  Id INT PRIMARY KEY,
+  Amount INT,
+  EmployeeId INT,
+  FOREIGN KEY (EmployeeId) REFERENCES Employee(Id)
+);
+
+INSERT INTO Employee (Id, Name, Address) VALUES (1, 'John Smith', '123 Main St');
+INSERT INTO Employee (Id, Name, Address) VALUES (2, 'Jane Doe', '456 Park Ave');
+
+INSERT INTO Salary (Id, Amount, EmployeeId) VALUES (1, 50000, 1);
+INSERT INTO Salary (Id, Amount, EmployeeId) VALUES (2, 60000, 2);
+
+SELECT * FROM Employee;
+SELECT * FROM Salary;
+
+____________________________________________________________________________________________________________________
+
+
+/*Multiple customers can have multiple purchases. (n:m)*/
+
+CREATE TABLE Customer (
+    Id INT PRIMARY KEY,
+    Name VARCHAR(255),
+    Age INT
+);
+
+CREATE TABLE Purchase (
+    Id INT PRIMARY KEY,
+    Item VARCHAR(255),
+    Amount INT
+);
+
+CREATE TABLE CustomerPurchase (
+    CustomerId INT,
+    PurchaseId INT,
+    PRIMARY KEY (CustomerId, PurchaseId),
+    FOREIGN KEY (CustomerId) REFERENCES Customer(Id),
+    FOREIGN KEY (PurchaseId) REFERENCES Purchase(Id)
+);
+
+INSERT INTO Customer (Id, Name, Age) VALUES (1, 'John Doe', 30);
+INSERT INTO Customer (Id, Name, Age) VALUES (2, 'Jane Smith', 25);
+
+INSERT INTO Purchase (Id, Item, Amount) VALUES (1, 'Item1', 10);
+INSERT INTO Purchase (Id, Item, Amount) VALUES (2, 'Item2', 20);
+INSERT INTO Purchase (Id, Item, Amount) VALUES (3, 'Item3', 15);
+INSERT INTO Purchase (Id, Item, Amount) VALUES (4, 'Item4', 25);
+INSERT INTO Purchase (Id, Item, Amount) VALUES (5, 'Item5', 30);
+
+INSERT INTO CustomerPurchase (CustomerId, PurchaseId) VALUES (1, 1);
+INSERT INTO CustomerPurchase (CustomerId, PurchaseId) VALUES (1, 2);
+INSERT INTO CustomerPurchase (CustomerId, PurchaseId) VALUES (2, 3);
+INSERT INTO CustomerPurchase (CustomerId, PurchaseId) VALUES (2, 4);
+INSERT INTO CustomerPurchase (CustomerId, PurchaseId) VALUES (2, 5);
